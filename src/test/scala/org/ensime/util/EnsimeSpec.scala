@@ -1,18 +1,18 @@
 // Copyright: 2010 - 2016 https://github.com/ensime/ensime-server/graphs
-// Licence: http://www.gnu.org/licenses/gpl-3.0.en.html
+// License: http://www.gnu.org/licenses/gpl-3.0.en.html
 package org.ensime.util
 
-import akka.util.Timeout
-import com.typesafe.config.ConfigFactory
 import java.util.concurrent.TimeUnit
-import org.scalatest._
-import org.scalatest.time._
-import org.scalatest.concurrent.Eventually
-import org.scalatest.concurrent.AbstractPatienceConfiguration
+
+import scala.concurrent.duration._
+
+import com.typesafe.config.ConfigFactory
 import org.scalactic.TypeCheckedTripleEquals
+import org.scalatest._
+import org.scalatest.concurrent.Eventually
+import org.scalatest.time._
 import org.slf4j.LoggerFactory
 import org.slf4j.bridge.SLF4JBridgeHandler
-import scala.concurrent.duration._
 
 /**
  * Boilerplate remover and preferred testing style in ENSIME.

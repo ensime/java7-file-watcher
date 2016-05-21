@@ -1,24 +1,22 @@
 // Copyright: 2010 - 2016 https://github.com/ensime/ensime-server/graphs
-// Licence: http://www.gnu.org/licenses/gpl-3.0.en.html
+// License: http://www.gnu.org/licenses/gpl-3.0.en.html
 package org.ensime.indexer
 
-import akka.testkit._
+import java.io.File
+import java.nio.charset.Charset
+import java.util.UUID
+
+import scala.collection.immutable.Set
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+
 import akka.event.slf4j.SLF4JLogging
+import akka.testkit._
 import com.google.common.io.Files
 import file._
-import java.util.UUID
+import org.ensime.filewatcher._
 import org.ensime.fixture._
 import org.ensime.util._
-import org.scalatest.ParallelTestExecution
-import org.scalatest.tagobjects.Retryable
-import org.scalatest.concurrent.ScalaFutures
-import java.nio.charset.Charset
-import org.ensime.filewatcher._
-import scala.collection.immutable.Set
-import scala.concurrent.duration._
-import scala.language.implicitConversions
-import java.io.File
-import scala.concurrent.ExecutionContext.Implicits.global
 
 sealed trait FileWatcherMessage
 

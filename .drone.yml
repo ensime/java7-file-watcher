@@ -1,11 +1,11 @@
 build:
-  image: ensime/ensime:v2.x
+  image: ensime/ensime:v2.x-cache
   pull: true
   environment:
     - SONATYPE_USERNAME=$$SONATYPE_USERNAME
     - SONATYPE_PASSWORD=$$SONATYPE_PASSWORD
   commands:
-    - sbt ++$SCALA_VERSION clean test:compile doc ;
+    - sbt ++$SCALA_VERSION clean test:compile doc createHeaders test:createHeaders;
       if [ $(git diff | wc -l) -ge 1 ] ; then
         echo "Code formatting does not meet the project's standards:" ;
         git --no-pager diff ;
@@ -18,5 +18,5 @@ build:
 
 matrix:
   SCALA_VERSION:
-    - 2.11.7
+    - 2.11.8
     - 2.10.6

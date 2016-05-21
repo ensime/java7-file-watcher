@@ -1,19 +1,19 @@
 // Copyright 2016 Sam Halliday
 // Licence: http://www.apache.org/licenses/LICENSE-2.0
-import scala.util.{ Properties, Try }
-import sbt._
-import Keys._
 import com.typesafe.sbt.SbtScalariform._
+import sbt.Keys._
+import sbt._
+
+import scala.util.Properties
 
 /**
  * A bunch of sensible defaults that fommil typically uses.
- *
- * TODO: integrate / contribute to the typelevel sbt plugin.
  */
 object Sensible {
 
   lazy val settings = Seq(
     ivyLoggingLevel := UpdateLogging.Quiet,
+    conflictManager := ConflictManager.strict,
 
     scalacOptions in Compile ++= Seq(
       "-encoding", "UTF-8",
@@ -43,7 +43,7 @@ object Sensible {
     ),
     javacOptions in doc ++= Seq("-source", "1.6"),
 
-    javaOptions := Seq("-Xss2m", "-XX:MaxPermSize=256m", "-Xms1g", "-Xmx1g"),
+    javaOptions := Seq("-Xss2m", "-XX:MaxPermSize=256m", "-Xms256m", "-Xmx256m"),
     javaOptions += "-Dfile.encoding=UTF8",
     javaOptions ++= Seq("-XX:+UseConcMarkSweepGC", "-XX:+CMSIncrementalMode"),
     javaOptions in run ++= yourkitAgent,
@@ -51,8 +51,10 @@ object Sensible {
     maxErrors := 1,
     fork := true,
 
-    // 4 x 1GB = 4GB
-    concurrentRestrictions in Global := Seq(Tags.limitAll(4)),
+    concurrentRestrictions in Global := {
+      val limited = Properties.envOrElse("SBT_TASK_LIMIT", "4").toInt
+      Seq(Tags.limitAll(limited))
+    },
 
     dependencyOverrides ++= Set(
       "org.scala-lang" % "scala-compiler" % scalaVersion.value,
@@ -61,11 +63,11 @@ object Sensible {
       "org.scala-lang" % "scalap" % scalaVersion.value,
       "org.scala-lang.modules" %% "scala-xml" % scalaModulesVersion,
       "org.scala-lang.modules" %% "scala-parser-combinators" % scalaModulesVersion,
-      "org.scalamacros" %% "quasiquotes" % quasiquotesVersion
+      "org.scalamacros" %% "quasiquotes" % quasiquotesVersion,
+      "org.scalatest" %% "scalatest" % scalatestVersion
     ) ++ logback ++ guava ++ shapeless(scalaVersion.value)
   ) ++ inConfig(Test)(testSettings) ++ scalariformSettings
 
-  // TODO: scalariformSettingsWithIt generalised
   def testSettings = Seq(
     parallelExecution := true,
 
@@ -101,11 +103,10 @@ object Sensible {
 
   val scalaModulesVersion = "1.0.4"
   val akkaVersion = "2.3.14"
-  val streamsVersion = "1.0"
   val scalatestVersion = "2.2.6"
-  val logbackVersion = "1.7.16"
+  val logbackVersion = "1.7.21"
   val quasiquotesVersion = "2.0.1"
-  val guavaVersion = "18.0"
+  val guavaVersion = "19.0"
 
   val macroParadise = Seq(
     compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
@@ -113,9 +114,9 @@ object Sensible {
   def shapeless(scalaVersion: String) = {
     if (scalaVersion.startsWith("2.10.")) macroParadise
     else Nil
-  } :+ "com.chuusai" %% "shapeless" % "2.2.5"
+  } :+ "com.chuusai" %% "shapeless" % "2.3.0"
   val logback = Seq(
-    "ch.qos.logback" % "logback-classic" % "1.1.5",
+    "ch.qos.logback" % "logback-classic" % "1.1.7",
     "org.slf4j" % "slf4j-api" % logbackVersion,
     "org.slf4j" % "jul-to-slf4j" % logbackVersion,
     "org.slf4j" % "jcl-over-slf4j" % logbackVersion
@@ -125,10 +126,10 @@ object Sensible {
     "com.google.code.findbugs" % "jsr305" % "3.0.1" % "provided"
   )
 
-  // TODO: automate testLibs as part of the testSettings
   def testLibs(config: String = "test") = Seq(
     "org.scalatest" %% "scalatest" % scalatestVersion % config,
     "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % config,
+    // scalacheck 1.13.0 is java 7+
     "org.scalacheck" %% "scalacheck" % "1.12.5" % config,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % config,
     "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % config

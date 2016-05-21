@@ -1,11 +1,10 @@
 // Copyright: 2010 - 2016 https://github.com/ensime/ensime-server/graphs
-// Licence: http://www.gnu.org/licenses/gpl-3.0.en.html
+// License: http://www.apache.org/licenses/LICENSE-2.0
 package org.ensime.filewatcher
 
 import java.io._
 import java.nio.file.{ FileSystems, Path, WatchKey }
 import java.nio.file.StandardWatchEventKinds._
-import java.nio.file.WatchEvent.Kind
 import java.nio.file.WatchService
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -15,15 +14,13 @@ import scala.collection.JavaConversions._
 import scala.collection.concurrent.Map
 import scala.collection.convert.decorateAsScala._
 import scala.collection.immutable.Set
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.implicitConversions
-import scala.util.{ Properties, Failure, Success, Try }
+import scala.util.{ Failure, Properties, Success, Try }
 
-import org.slf4j.{ Logger, LoggerFactory }
+import org.slf4j.LoggerFactory
 
-class FileWatchService {
-  self =>
-  val log = LoggerFactory.getLogger(getClass)
+class FileWatchService { self =>
+  private val log = LoggerFactory.getLogger(getClass)
 
   /**
    * The low priority thread used for checking the files being monitored.
