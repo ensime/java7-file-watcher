@@ -12,7 +12,7 @@ object FileWatcherBuild extends Build {
 
   override val settings = super.settings ++ Seq(
     organization := "org.ensime",
-    version := "1.0.0",
+    version := "1.0.1-SNAPSHOT",
     scalaVersion := "2.11.8"
   ) ++ sonatype("ensime", "java7-file-watcher", Apache2)
 
